@@ -74,7 +74,7 @@ proc ::rss-synd::init {args} {
 					continue
 				}
 
-				::http::register https 443 [ list ::tls::socket -tls1 1 -autoservername 1 ]
+				::http::register https 443 [list ::tls::socket -request 1 -require 0 -autoservername 1 -tls1 1 -tls1.2 1 -tls1.3 1]
 			}
 
 			if {(![info exists tmp(url-auth)]) || ($tmp(url-auth) == "")} {
