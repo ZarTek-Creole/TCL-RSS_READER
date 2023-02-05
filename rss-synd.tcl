@@ -75,7 +75,7 @@ proc ::rss-synd::init {args} {
 					continue
 				}
 
-				::http::register https 443 [list ::tls::socket -autoservername true]
+				::http::register https 443 [ list ::tls::socket -tls1 1 ]
 			}
 
 			if {(![info exists tmp(url-auth)]) || ($tmp(url-auth) == "")} {
@@ -332,15 +332,6 @@ proc ::rss-synd::feed_callback {feedlist args} {
 		}
 	}
 
-	if {([info exists meta(Content-Encoding)]) && \
-	    ([string equal $meta(Content-Encoding) "gzip"])} {
-		if {[catch {[namespace current]::feed_gzip $data} data] != 0} {
-			putlog "\002RSS Error\002: Unable to decompress \"$state(url)\": $data"
-			::http::cleanup $token
-			return 1
-		}
-	}
-
 	if {[catch {[namespace current]::xml_list_create $data} data] != 0} {
 		putlog "\002RSS Error\002: Unable to parse feed properly, parser returned error. \"$state(url)\""
 		::http::cleanup $token
@@ -414,26 +405,6 @@ proc ::rss-synd::feed_info {data {target "feed"}} {
 	set feed(tag-feed) [list 0 $type]
 
 	return 1
-}
-
-# decompress gzip formatted data
-proc ::rss-synd::feed_gzip {cdata} {
-	variable packages
-
-	if {(![info exists packages(trf)]) || \
-	    ($packages(trf) != 0)} {
-		error "Trf package not found."
-	}
-
-	# remove the 10 byte gzip header and 8 byte footer
-	set cdata [string range $cdata 10 [expr { [string length $cdata] - 9 } ]]
-
-	# decompress the raw data
-	if {[catch {zip -mode decompress -nowrap 1 $cdata} data] != 0} {
-		error $data
-	}
-
-	return $data
 }
 
 proc ::rss-synd::feed_read { } {
