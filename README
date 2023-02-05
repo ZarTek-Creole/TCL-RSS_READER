@@ -20,17 +20,13 @@ Dependencies (for additional features)
 ** URL: http://tcllib.sourceforge.net/
 ** FreeBSD: cd /usr/ports/devel/tcllib/ && make install clean
 ** RedHat: yum install tcllib
+** Debian: apt install tcllib
 
 * HTTPS
-** Requires: TLS package to be installed.
-** URL: http://www.sensus.org/tcl/
+** Requires: TCL-TLS package to be installed.
 ** FreeBSD: cd /usr/ports/devel/tcltls/ && make install clean
+** Debian: apt install tcl-tls
 
-* Gzip Decompression:
-** Requires: Trf package to be installed.
-** URL: http://tcltrf.sourceforge.net/
-** FreeBSD: cd /usr/ports/devel/tcl-trf/ && make install clean
-** RedHat: yum install tcl-trf
 
 ================================================================================
 SETTINGS
