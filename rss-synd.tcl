@@ -36,13 +36,12 @@ proc ::rss-synd::init {args} {
 	variable version
 	variable packages
 
-	set version(number)	0.5.1
-	set version(date)	"2012-02-27"
+	set version(number)	1.0.0
+	set version(date)	"2023-02-05"
 
 	package require http
 	set packages(base64) [catch {package require base64}]; # http auth
 	set packages(tls) [catch {package require tls}]; # https
-	set packages(trf) [catch {package require Trf}]; # gzip compression
 
 	foreach feed [array names rss] {
 		array set tmp $default
