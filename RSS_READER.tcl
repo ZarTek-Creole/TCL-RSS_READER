@@ -1,10 +1,4 @@
 # -*- tab-width: 4; indent-tabs-mode: t; -*-
-# rss-synd.tcl -- 0.5.1
-#
-#   Highly configurable asynchronous RSS & Atom feed reader for Eggdrops 
-#     written in TCL. Supports multiple feeds, gzip compressed feeds,
-#     automatically messaging channels with updates at set intervals,
-#     custom private/channel triggers and more.
 #
 # Copyright (c) 2011 Andrew Scott, HM2K
 #
@@ -12,34 +6,33 @@
 # Author: Andrew Scott <andrew.scott@wizzer-it.com>
 # Author: HM2K <irc@hm2k.org>
 # License: See LICENSE file
-# Link: http://code.google.com/p/rss-synd/
+# Link: http://code.google.com/p/RSS_READER/
 # Tags: rss, atom, syndication
-# Updated: 05-Jan-2011
 #
 ###Usage
 # See README file
 #
 ###Revisions
-# See HISTORY file
+# See https://github.com/ZarTek-Creole/TCL-RSS_READER/commits/master
 
 #
 # Include Settings
-#
-if {[catch {source scripts/rss-synd-settings.tcl} err]} {
-  putlog "Error: Could not load 'rss-synd-settings.tcl file.'";
-}
-namespace eval ::rss-synd { }
 
-proc ::rss-synd::init {args} {
+namespace eval ::RSS_READER { }
+
+proc ::RSS_READER::init {} {
 	variable rss
 	variable default
 	variable version
 	variable packages
 
+	if {[catch {source scripts/RSS_READER.conf} err]} {
+		putlog "[namespace current] :: Error> Could not load 'RSS_READER.conf file.'";
+	}
 	set version(number)	1.0.0
 	set version(date)	"2023-02-05"
 
-	package require http
+	set packages(http) [catch {package require http}];
 	set packages(base64) [catch {package require base64}]; # http auth
 	set packages(tls) [catch {package require tls}]; # https
 
@@ -104,7 +97,7 @@ proc ::rss-synd::init {args} {
 				unset rss($feed)
 				continue
 			}
-			
+
 			if {([info exists tmp(feedencoding)]) && ([lsearch -exact [encoding names] [string tolower $tmp(feedencoding)]] < 0)} {
 				putlog "\002RSS Error\002: Unable to load feed \"$feed\", unknown feedencoding \"$tmp(feedencoding)\"."
 				unset rss($feed)
@@ -133,15 +126,11 @@ proc ::rss-synd::init {args} {
 	putlog "\002RSS Syndication Script v$version(number)\002 ($version(date)): Loaded."
 }
 
-proc ::rss-synd::deinit {args} {
+proc ::RSS_READER::deinit {args} {
 	catch {unbind evnt -|- prerehash [namespace current]::deinit}
 	catch {unbind time -|- {* * * * *} [namespace current]::feed_get}
 	catch {unbind pubm -|- {* *} [namespace current]::trigger}
 	catch {unbind msgm -|- {*} [namespace current]::trigger}
-
-	foreach child [namespace children] {
-		catch {[set child]::deinit}
-	}
 
 	namespace delete [namespace current]
 }
@@ -150,7 +139,7 @@ proc ::rss-synd::deinit {args} {
 # Trigger Function
 ##
 
-proc ::rss-synd::trigger {nick user handle args} {
+proc ::RSS_READER::trigger {nick user handle args} {
 	variable rss
 	variable default
 
@@ -251,7 +240,7 @@ proc ::rss-synd::trigger {nick user handle args} {
 # Feed Retrieving Functions
 ##
 
-proc ::rss-synd::feed_get {args} {
+proc ::RSS_READER::feed_get {args} {
 	variable rss
 
 	set i 0
@@ -285,7 +274,7 @@ proc ::rss-synd::feed_get {args} {
 	}
 }
 
-proc ::rss-synd::feed_callback {feedlist args} {
+proc ::RSS_READER::feed_callback {feedlist args} {
 	set token [lindex $args end]
 	array set feed $feedlist
 
@@ -318,7 +307,7 @@ proc ::rss-synd::feed_callback {feedlist args} {
 	}
 
 	set data [::http::data $token]
-	
+
 	if {[info exists feed(feedencoding)]} {
 		set data [encoding convertfrom [string tolower $feed(feedencoding)] $data]
 	}
@@ -366,7 +355,7 @@ proc ::rss-synd::feed_callback {feedlist args} {
 	}
 }
 
-proc ::rss-synd::feed_info {data {target "feed"}} {
+proc ::RSS_READER::feed_info {data {target "feed"}} {
 	upvar 1 $target feed
 	set length [[namespace current]::xml_get_info $data [list -1 "*"]]
 
@@ -406,7 +395,7 @@ proc ::rss-synd::feed_info {data {target "feed"}} {
 	return 1
 }
 
-proc ::rss-synd::feed_read { } {
+proc ::RSS_READER::feed_read { } {
 	upvar 1 feed feed
 
 	if {[catch {open $feed(database) "r"} fp] != 0} {
@@ -420,7 +409,7 @@ proc ::rss-synd::feed_read { } {
 	return $data
 }
 
-proc ::rss-synd::feed_write {data} {
+proc ::RSS_READER::feed_write {data} {
 	upvar 1 feed feed
 
 	if {[catch {open $feed(database) "w+"} fp] != 0} {
@@ -438,7 +427,7 @@ proc ::rss-synd::feed_write {data} {
 # XML Functions
 ##
 
-proc ::rss-synd::xml_list_create {xml_data} {
+proc ::RSS_READER::xml_list_create {xml_data} {
 	set xml_list [list]
 	set ns_current [namespace current]
 
@@ -556,7 +545,7 @@ proc ::rss-synd::xml_list_create {xml_data} {
 }
 
 # simple escape function
-proc ::rss-synd::xml_escape {string} {
+proc ::RSS_READER::xml_escape {string} {
 	regsub -all -- {([\{\}])} $string {\\\1} string
 
 	return $string
@@ -565,7 +554,7 @@ proc ::rss-synd::xml_escape {string} {
 # this function is to replace:
 #  regexp -indices -start $ptr {<(!\[CDATA\[.+?\]\]|!--.+?--|!DOCTYPE.+?|.+?)>} $xml_data -> tag_start
 # which doesnt work correctly with tcl's re_syntax
-proc ::rss-synd::xml_get_position {xml_data ptr} {
+proc ::RSS_READER::xml_get_position {xml_data ptr} {
 	set tag_start [list -1 -1]
 
 	regexp -indices -start $ptr {<(.+?)>} $xml_data -> tmp(tag)
@@ -592,7 +581,7 @@ proc ::rss-synd::xml_get_position {xml_data ptr} {
 }
 
 # recursivly flatten all data without tags or attributes
-proc ::rss-synd::xml_list_flatten {xml_list {level 0}} {
+proc ::RSS_READER::xml_list_flatten {xml_list {level 0}} {
 	set xml_string ""
 
 	foreach e_list $xml_list {
@@ -614,7 +603,7 @@ proc ::rss-synd::xml_list_flatten {xml_list {level 0}} {
 
 # returns information on a data structure when given a path.
 #  paths can be specified using: [struct number] [struct name] <...>
-proc ::rss-synd::xml_get_info {xml_list path {element "data"}} {
+proc ::RSS_READER::xml_get_info {xml_list path {element "data"}} {
 	set i 0
 
 	foreach {t_data} $xml_list {
@@ -654,7 +643,7 @@ proc ::rss-synd::xml_get_info {xml_list path {element "data"}} {
 }
 
 # converts 'args' into a list in the same order
-proc ::rss-synd::xml_join_tags {args} {
+proc ::RSS_READER::xml_join_tags {args} {
 	set list [list]
 
 	foreach tag $args {
@@ -672,7 +661,7 @@ proc ::rss-synd::xml_join_tags {args} {
 # Output Feed Functions
 ##
 
-proc ::rss-synd::feed_output {data {odata ""}} {
+proc ::RSS_READER::feed_output {data {odata ""}} {
 	upvar 1 feed feed
 	set msgs [list]
 
@@ -701,7 +690,7 @@ proc ::rss-synd::feed_output {data {odata ""}} {
 	[namespace current]::feed_msg $feed(type) $msgs $feed(channels) $nick
 }
 
-proc ::rss-synd::feed_msg {type msgs targets {nick ""}} {
+proc ::RSS_READER::feed_msg {type msgs targets {nick ""}} {
 	# check if our target is a nick
 	if {(($nick != "") && \
 	     ($targets == "")) || \
@@ -725,7 +714,7 @@ proc ::rss-synd::feed_msg {type msgs targets {nick ""}} {
 	}
 }
 
-proc ::rss-synd::feed_compare {odata data} {
+proc ::RSS_READER::feed_compare {odata data} {
 	if {$odata == ""} {
 		return 0
 	}
@@ -796,7 +785,7 @@ proc ::rss-synd::feed_compare {odata data} {
 # Cookie Parsing Functions
 ##
 
-proc ::rss-synd::cookie_parse {data current} {
+proc ::RSS_READER::cookie_parse {data current} {
 	upvar 1 feed feed
 	set output $feed(output)
 
@@ -859,7 +848,7 @@ proc ::rss-synd::cookie_parse {data current} {
 	return $output
 }
 
-proc ::rss-synd::cookie_replace {cookie data} {
+proc ::RSS_READER::cookie_replace {cookie data} {
 	set element "children"
 
 	set tags [list]
@@ -890,7 +879,7 @@ proc ::rss-synd::cookie_replace {cookie data} {
 # Misc Functions
 ##
 
-proc ::rss-synd::html_decode {eval data {loop 0}} {
+proc ::RSS_READER::html_decode {eval data {loop 0}} {
 	if {![string match *&* $data]} {return $data}
 	array set chars {
 			 nbsp	\x20 amp	\x26 quot	\x22 lt		\x3C
@@ -952,9 +941,9 @@ proc ::rss-synd::html_decode {eval data {loop 0}} {
 	return $data
 }
 
-proc ::rss-synd::is_utf8_patched {} { catch {queuesize a} err1; catch {queuesize \u0754} err2; expr {[string bytelength $err2]!=[string bytelength $err1]} }
+proc ::RSS_READER::is_utf8_patched {} { catch {queuesize a} err1; catch {queuesize \u0754} err2; expr {[string bytelength $err2]!=[string bytelength $err1]} }
 
-proc ::rss-synd::check_channel {chanlist chan} {
+proc ::RSS_READER::check_channel {chanlist chan} {
 	foreach match [split $chanlist] {
 		if {[string equal -nocase $match $chan]} {
 			return 1
@@ -964,7 +953,7 @@ proc ::rss-synd::check_channel {chanlist chan} {
 	return 0
 }
 
-proc ::rss-synd::urldecode {str} {
+proc ::RSS_READER::urldecode {str} {
 	regsub -all -- {([\"\$\[\]\{\}\(\)\\])} $str {\\\1} str
 
 	regsub -all -- {%([aAbBcCdDeEfF0-9][aAbBcCdDeEfF0-9]);?} $str {[format %c [scan \1 %x]]} str
@@ -972,4 +961,4 @@ proc ::rss-synd::urldecode {str} {
 	return [subst $str]
 }
 
-::rss-synd::init
+::RSS_READER::init

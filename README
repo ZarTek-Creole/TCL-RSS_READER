@@ -1,3 +1,5 @@
+BASED FROM https://github.com/eggtcl/RSS_READER CODE.
+
 ################################################################################
   README
 ################################################################################
@@ -6,8 +8,8 @@
 INSTALL
 ================================================================================
 
-  1. Copy rss-synd.tcl and rss-synd-settings.tcl to your scripts directory.
-  2. Add "source scripts/rss-synd.tcl" to your eggdrop.conf file.
+  1. Copy RSS_READER.tcl and RSS_READER.conf to your scripts directory.
+  2. Add "source scripts/RSS_READER.tcl" to your eggdrop.conf file.
 
 Dependencies (for additional features)
 
@@ -120,7 +122,7 @@ charset          This is the charset you want the feed to be outputted using.
                  Example: utf-8
                           cp1251
                           iso8859-1
-feedencoding 	This is the charset the feed is in. (look in the sourcecode 
+feedencoding 	This is the charset the feed is in. (look in the sourcecode
                 it is usualy mentioned in the <?xml> header. Please note that
 				Tcl uses other encoding names, esp. the Windows-xxx encodings.
 				In Tcl they are named cpxxx.
@@ -136,7 +138,7 @@ Cookies:
    current article. If you wish to output an attribute of a tag you can do that
    by using the attribute name with an = in front of it
    (eg: @@entry!link!=href@@). This would get the 'href' attribute from the
-   <link> tag. Refer to rss-synd.tcl for more examples.
+   <link> tag. Refer to RSS_READER.tcl for more examples.
 
 ================================================================================
 FAQ
