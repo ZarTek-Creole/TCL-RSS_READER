@@ -1,0 +1,116 @@
+# TCL RSS Reader - SEO Metadata
+# Structured metadata for search engine optimization
+
+project:
+  name: "TCL RSS Reader"
+  full_name: "TCL-RSS_READER"
+  type: "Eggdrop TCL Script"
+  category: "IRC Bot Automation"
+
+description:
+  short: "RSS/ATOM feed parser for Eggdrop IRC bots"
+  long: |
+    Feature-rich RSS and ATOM feed parser designed for Eggdrop IRC bots.
+    Provides automatic feed monitoring, customizable output formatting,
+    HTTP/HTTPS support, and trigger commands for comprehensive IRC
+    channel automation and news distribution.
+
+keywords:
+  primary:
+    - RSS reader
+    - ATOM parser
+    - Eggdrop RSS
+    - TCL RSS script
+    - IRC bot RSS
+    - Feed reader bot
+    - RSS announcements
+    - IRC RSS automation
+  
+  secondary:
+    - Feed aggregator
+    - HTTP RSS parser
+    - XML feed parser
+    - Channel RSS bot
+    - IRC news bot
+    - Eggdrop automation
+    - RSS polling
+    - Customizable output
+
+  technical:
+    - TCL HTTP package
+    - TCL TLS support
+    - RSS XML parsing
+    - ATOM feed format
+    - Eggdrop TCL API
+    - Feed encoding
+    - Output formatting
+
+topics:
+  - rss
+  - atom
+  - eggdrop
+  - tcl
+  - irc-bot
+  - feed-reader
+  - rss-parser
+  - feed-aggregator
+  - irc
+  - bot-script
+  - automation
+  - news-feed
+  - http
+  - rss-feed
+  - channel-bot
+
+language:
+  primary: "TCL"
+  version: "8.5+"
+
+requires:
+  - "Eggdrop 1.6.19+"
+  - "TCL 8.5 or higher"
+  - "TCL HTTP package (optional for HTTP)"
+  - "TCL TLS package (optional for HTTPS)"
+
+features:
+  - "RSS 2.0 and ATOM 1.0 feed parsing"
+  - "HTTP and HTTPS protocol support"
+  - "Automatic feed polling and announcements"
+  - "Customizable output formatting"
+  - "Trigger commands for manual checks"
+  - "Multi-feed support"
+  - "Database storage for feed tracking"
+  - "Feed encoding support"
+
+author:
+  name: "ZarTek-Creole"
+  github: "https://github.com/ZarTek-Creole"
+
+license:
+  type: "CC-BY-4.0"
+  url: "https://creativecommons.org/licenses/by/4.0/"
+
+repository:
+  url: "https://github.com/ZarTek-Creole/TCL-RSS_READER"
+  type: "git"
+
+seo:
+  title: "TCL RSS Reader for Eggdrop - RSS/ATOM Feed Parser"
+  meta_description: |
+    TCL RSS Reader for Eggdrop - Feature-rich RSS/ATOM feed parser with
+    HTTP/HTTPS support, customizable output formatting, automatic
+    announcements, and trigger commands for IRC bot integration.
+  
+  target_audience:
+    - IRC bot administrators
+    - Eggdrop users
+    - TCL developers
+    - IRC channel operators
+    - News aggregation enthusiasts
+  
+  use_cases:
+    - Automated news feeds in IRC channels
+    - Blog post announcements
+    - Website update notifications
+    - Multi-source feed aggregation
+    - IRC channel information distribution
