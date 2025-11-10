@@ -4,6 +4,11 @@ BASED FROM https://github.com/eggtcl/RSS_READER CODE.
   README
 ################################################################################
 
+[![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
+[![Language: TCL](https://img.shields.io/badge/Language-TCL-blue.svg)](https://www.tcl.tk/)
+[![Eggdrop Compatible](https://img.shields.io/badge/Eggdrop-Compatible-green.svg)](https://www.eggheads.org/)
+[![RSS/ATOM Parser](https://img.shields.io/badge/Parser-RSS%2FATOM-orange.svg)](https://www.rssboard.org/)
+
 ================================================================================
 INSTALL
 ================================================================================
@@ -163,3 +168,4 @@ A: Make sure the feed is valid check it with http://feedvalidator.org/. If the
    feed has errors, it probably wont work.
 
 EOF
+
